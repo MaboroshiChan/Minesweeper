@@ -17,13 +17,38 @@ import java.util.Scanner;
 public class Main{
 
     public static void main(String[] args){
+
+        Random rand = new Random();
+
+        System.out.println("Welcome to Minesweeper!");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please select a mode: (beginner, intermediate, expert, or debug)");
+        int rows = 20;
+        int columns = 20;
+        int mines = rand.nextInt(20) + 1; // Random number of mines between 1 and 20
+        boolean debug = false;
+        Minefield minefield = new Minefield(rows, columns, mines);
+
         /** 
         while(!minefield.gameOver()){
-            
+            int revealRow, revealCol;
+            // user input position to reveal
+            System.out.println("Enter row and column to reveal (e.g., '3 4'):");
+            revealRow = scanner.nextInt();
+            revealCol = scanner.nextInt();
+            scanner.nextLine(); // consume the newline character
+            if (revealRow < 0 || revealRow >= rows || revealCol < 0 || revealCol >= columns) {
+                System.out.println("Invalid position. Please try again.");
+                continue;
+            }
+            // reveal the cell
+            minefield.revealZeroes(revealRow, revealCol);
+            // print the current state of the minefield
+            System.out.println(minefield.toString());
+            // check if the cell is a mine
+
         }
-        */
        System.out.println("test println");
+       */
     }
-    
-    
 }

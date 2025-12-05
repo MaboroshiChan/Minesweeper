@@ -61,7 +61,7 @@ public class Minefield {
         this.mines = flags;
         this.flags = flags;
         this.revealedCells = 0;
-        this.debugMode = false;
+        this.debugMode = true;
 
         field = new Cell[rows][columns];
         for (int i = 0; i < rows; i++) {
@@ -70,10 +70,12 @@ public class Minefield {
             }
         }
 
-        // TODO: randomly place mines and evaluate field
         createMines(-1, -1, this.mines);
         evaluateField();
-
+        // If debug mode is enabled, print the minefield
+        if (debugMode) {
+            debug();    
+        }
     }
 
     /**
@@ -189,7 +191,21 @@ public class Minefield {
      *         revealed, otherwise return true.
      */
     public boolean gameOver() {
-        return true;
+        // Check if all cells are revealed or if a mine was hit
+        if (revealedCells + mines == rows * columns) {
+            System.out.println("Congratulations! You've cleared the minefield!");
+            return true; // Player wins
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Cell cell = field[i][j];
+                if (cell.getRevealed() && cell.getStatus().equals("M")) {
+                    System.out.println("Game Over! You hit a mine!");
+                    return true; // Player loses
+                }
+            }
+        }
+        return false; // Game is still ongoing
     }
 
     /**
@@ -248,7 +264,23 @@ public class Minefield {
      *           is very similar to the toString method below.
      */
     public void debug() {
-
+        // Print the minefield when evaluated the field
+        // each cell should be assigned a value or a mine
+        System.out.println(ANSI_YELLOW_BRIGHT + "Debug Mode: Minefield State" + ANSI_GREY_BACKGROUND);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Cell cell = field[i][j];
+                if (cell.getStatus().equals("M")) {
+                    System.out.print(ANSI_RED + "[M]" + ANSI_GREY_BACKGROUND);
+                } else if (cell.getStatus().equals("F")) {
+                    System.out.print(ANSI_BLUE + "[F]" + ANSI_GREY_BACKGROUND);
+                } else if (cell.getRevealed()) {
+                    System.out.print(ANSI_GREEN + "[" + cell.getStatus() + "]" + ANSI_GREY_BACKGROUND);
+                } else {
+                    System.out.print("[ ]");
+                }
+            }
+        }
     }
 
     /**
