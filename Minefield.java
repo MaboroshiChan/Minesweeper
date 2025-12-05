@@ -274,7 +274,12 @@ public class Minefield {
                     System.out.print(ANSI_RED + "[M]" + ANSI_GREY_BACKGROUND);
                 } else {
                     String status = cell.getStatus();
-                    System.out.print("[" + (status.equals(" ") ? " " : status) + "]");
+                    if(status.equals(" ")){
+                        System.out.print(ANSI_GREEN + "[ ]" + ANSI_GREY_BACKGROUND);
+                    }
+                    else {
+                        System.out.print(ANSI_YELLOW + "[" + status + "]" + ANSI_GREY_BACKGROUND);
+                    }
                 }
             }
             System.out.println();
@@ -293,10 +298,16 @@ public class Minefield {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 Cell cell = field[i][j];
-                if (cell.getRevealed()) {
+                if (cell.getStatus().equals("M") && cell.getRevealed()) {
+                    sb.append(ANSI_RED).append("[M]").append(ANSI_GREY_BACKGROUND);
+                }
+                else if (cell.getRevealed()) {
+                    // append status with color coding
+                    sb.append(ANSI_YELLOW);
                     sb.append("[").append(cell.getStatus()).append("]");
+                    sb.append(ANSI_GREY_BACKGROUND);
                 } else {
-                    sb.append("[ ]");
+                    sb.append(ANSI_GREEN).append("[ ]").append(ANSI_GREY_BACKGROUND);
                 }
             }
             sb.append("\n");
