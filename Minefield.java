@@ -65,8 +65,10 @@ public class Minefield {
         }
 
         // TODO: randomly place mines and evaluate field
-
-
+        // We need to randomly generate mine locations and then evaluate the field
+        this.createMines(-1, -1, this.mines); // -1, -1 indicates no starting cell to avoid
+        // after mines are created, evaluate the field
+        this.evaluateField();
     }
 
     /**
@@ -80,7 +82,26 @@ public class Minefield {
      */
     public void evaluateField() {
         // Would this method be best called after createMines()?
-        // 
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (field[i][j].getStatus().equals("M")) {
+                    // Increment adjacent cells
+                    for (int x = -1; x <= 1; x++) {
+                        for (int y = -1; y <= 1; y++) {
+                            int newX = i + x;
+                            int newY = j + y;
+                            if (newX >= 0 && newX < rows && newY >= 0 && newY < columns) {
+                                if (!field[newX][newY].getStatus().equals("M")) {
+                                    String currentStatus = field[newX][newY].getStatus();
+                                    int currentCount = currentStatus.equals(" ") ? 0 : Integer.parseInt(currentStatus);
+                                    field[newX][newY].setStatus(Integer.toString(currentCount + 1));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
