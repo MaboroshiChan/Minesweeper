@@ -22,6 +22,14 @@ public class Minefield {
      * Class Variable Section
      * 
     */
+    private Cell[][] field;
+    private int rows;
+    private int columns;
+    private int mines;
+    private int flags;
+    private int revealedCells;
+    private boolean debugMode;
+    private Random rand = new Random();
 
     /*Things to Note:
      * Please review ALL files given before attempting to write these functions.
@@ -40,7 +48,18 @@ public class Minefield {
      * @param flags      Number of flags, should be equal to mines
      */
     public Minefield(int rows, int columns, int flags) {
-
+        this.rows = rows;
+        this.columns = columns;
+        this.mines = flags;
+        this.flags = flags;
+        this.revealedCells = 0;
+        this.debugMode = false;
+        field = new Cell[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                field[i][j] = new Cell(false, " ");
+            }
+        }
 
     }
 
@@ -54,7 +73,7 @@ public class Minefield {
      * 
      */
     public void evaluateField() {
-
+        
     }
 
     /**
@@ -69,7 +88,16 @@ public class Minefield {
      * @param mines      Number of mines to place.
      */
     public void createMines(int x, int y, int mines) {
-
+        for(int i = 0; i < mines; ) {
+            int randX = rand.nextInt(rows);
+            int randY = rand.nextInt(columns);
+            if(!(randX == x && randY == y) 
+                && !field[randX][randY].getStatus().equals("M") // avoid placing multiple mines in same spot
+            ) {
+                field[randX][randY].setStatus("M");
+                i++;
+            }
+        }
     }
 
     /**
@@ -87,6 +115,24 @@ public class Minefield {
      * @return boolean Return false if guess did not hit mine or if flag was placed, true if mine found.
      */
     public boolean guess(int x, int y, boolean flag) {
+        Cell cell = field[x][y];
+        if (flag) {
+            if (flags > 0 && !cell.getRevealed()) {
+                cell.setStatus("F");
+                flags--;
+            }
+            return false;
+        } else {
+            if (cell.getStatus().equals("M")) {
+                cell.setRevealed(true);
+                return true; // hit a mine
+            } else if (cell.getStatus().equals("0")) {
+                revealZeroes(x, y);
+            } else {
+                cell.setRevealed(true); 
+                revealedCells++;
+            }
+        }
         return false;
     }
 
@@ -115,8 +161,7 @@ public class Minefield {
      * @param y      The y value the user entered.
      */
     public void revealZeroes(int x, int y) {
-
-
+        
     }
 
     /**

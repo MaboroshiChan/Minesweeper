@@ -1,3 +1,9 @@
+/**
+ * Cell.java
+ * This class represents a single cell in the minefield.
+ * It contains information about whether the cell is revealed and its status (e.g., mine, number of adjacent mines).
+ */
+
 public class Cell {
     private boolean revealed;
     private String status;
