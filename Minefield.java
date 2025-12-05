@@ -65,7 +65,8 @@ public class Minefield {
         }
 
         // TODO: randomly place mines and evaluate field
-
+        createMines(-1, -1, this.mines);
+        evaluateField();
 
     }
 
