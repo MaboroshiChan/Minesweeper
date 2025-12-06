@@ -1,5 +1,6 @@
 
 // Import Section
+import java.util.Queue;
 import java.util.Random;
 
 public class Minefield {
@@ -225,8 +226,38 @@ public class Minefield {
      * @param y The y value the user entered.
      */
     public void revealZeroes(int x, int y) {
-        // Implementing DFS using a stack
-        
+        Stack1Gen<int[]> stack = new Stack1Gen<>();
+        stack.push(new int[]{x,y});
+
+        Boolean[][] visited = new Boolean[this.columns][this.rows];
+
+        while (!stack.isEmpty()){
+            int[] pos = stack.pop();
+            int cx = pos[0];
+            int cy = pos[1];
+            Cell cell = field[cx][cy];
+            // traverse its surrounding
+            if(cx + 1 < this.rows && // unvisited
+               !visited[cx+1][cy] && !field[cx+1][cy].getStatus().equals('M')
+            ) {
+                visited[cx+1][cy] = true;
+                stack.push(new int[]{cx+1,cy});
+
+            }
+            if(cx - 1 >= 0 && !visited[cx -1][cy] && ! field[cx-1][cy].getStatus().equals('M')) {
+                visited [cx-1][cy] = true;
+                stack.push(new int[]{cx-1,cy});
+
+            }
+            if(cy + 1 < this.columns && !visited[cx][cy +1] && ! field[cx][cy-1].getStatus().equals('M')) {
+                visited [cx][cy+1] = true;
+                stack.push(new int[]{cx,cy+1});
+            }
+            if(cy - 1 >= 0 && !visited[cx][cy -1] && ! field[cx][cy-1].getStatus().equals('M')) {
+                visited [cx][cy-1] = true;
+                stack.push(new int[]{cx, cy-1});
+            }
+        }
     }
 
     /**
@@ -247,7 +278,38 @@ public class Minefield {
      * @param y The y value the user entered.
      */
     public void revealStartingArea(int x, int y) {
+        Q1Gen<int[]> queue = new Q1Gen<>();
+        queue.add(new int[]{x,y});
 
+        Boolean[][] visited = new Boolean[this.columns][this.rows];
+
+        while (!(queue.length() == 0)){
+            int[] pos = queue.remove();
+            int cx = pos[0];
+            int cy = pos[1];
+            Cell cell = field[cx][cy];
+            // traverse its surrounding
+            if(cx + 1 < this.rows && // unvisited
+               !visited[cx+1][cy] && !field[cx+1][cy].getStatus().equals('M')
+            ) {
+                visited[cx+1][cy] = true;
+                queue.add(new int[]{cx+1,cy});
+
+            }
+            if(cx - 1 >= 0 && !visited[cx -1][cy] && ! field[cx-1][cy].getStatus().equals('M')) {
+                visited [cx-1][cy] = true;
+                queue.add(new int[]{cx-1,cy});
+
+            }
+            if(cy + 1 < this.columns && !visited[cx][cy +1] && ! field[cx][cy-1].getStatus().equals('M')) {
+                visited [cx][cy+1] = true;
+                queue.add(new int[]{cx,cy+1});
+            }
+            if(cy - 1 >= 0 && !visited[cx][cy -1] && ! field[cx][cy-1].getStatus().equals('M')) {
+                visited [cx][cy-1] = true;
+                queue.add(new int[]{cx, cy-1});
+            }
+        }
     }
 
     /**
