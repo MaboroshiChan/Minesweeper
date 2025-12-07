@@ -24,13 +24,11 @@ public class Main {
         System.out.println("Welcome to Minesweeper!");
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please select a mode: (beginner, intermediate, expert, or debug)");
-        int rows = 20;
-        int columns = 20;
-        int mines = 40; // Random number of mines between 1 and 20
+        int rows = 10;
+        int columns = 10;
+        int mines = 5; // Random number of mines between 1 and 20
         boolean debug = false;
         Minefield minefield = new Minefield(rows, columns, mines);
-
-        //minefield.revealZeroes(rows / 2, columns / 2);
 
         //minefield.revealStartingArea(rows / 2, columns / 2);
 
@@ -54,16 +52,13 @@ public class Main {
                 int col = Integer.parseInt(parts[1]);
                 boolean isFlag = (parts.length >= 3 && parts[2].equalsIgnoreCase("flag"));
 
-                // 验证输入位置
                 if (row < 0 || row >= rows || col < 0 || col >= columns) {
                     System.out.println("Invalid position. Please try again.");
                     continue;
                 }
 
-                // 执行猜测
                 boolean hitMine = minefield.guess(row, col, isFlag);
 
-                // 检查是否踩到地雷
                 if (hitMine && !isFlag) {
                     System.out.println("BOOM! You hit a mine!");
                     if (debug) {
@@ -74,7 +69,11 @@ public class Main {
                     break;
                 }
 
-                // 显示更新后的地雷场
+                if (!isFlag) {
+                    System.out.println("ready to reveal");
+                    minefield.revealZeroes(row, col);
+                }
+
                 System.out.println("Current minefield:");
                 if (debug) {
                     minefield.debug();
@@ -83,19 +82,10 @@ public class Main {
                 }
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid number format. Please enter numeric values for row and column.");
+                System.out.println("Invalid number format.");
             }
         }
 
-        /**
-         * if (minefield.isGameWon()) {
-         * System.out.println("Congratulations! You won the game!");
-         * System.out.println("Final minefield:");
-         * minefield.debug(); // 显示完整地雷场
-         * } else {
-         * System.out.println("Game Over! Better luck next time!");
-         * }
-         */
         scanner.close();
     }
 }

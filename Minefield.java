@@ -228,9 +228,6 @@ public class Minefield {
      */
     public void revealZeroes(int x, int y) {
 
-        if (field[x][y].getStatus().equals(" ")) {
-            return;
-        }
         Stack1Gen<int[]> stack = new Stack1Gen<>();
         stack.push(new int[] { x, y });
 
@@ -247,24 +244,43 @@ public class Minefield {
 
             field[cx][cy].setRevealed(true);
             // traverse its surrounding
-            if (cx + 1 < this.rows
-                    && !visited[cx + 1][cy]
-                    && (field[cx + 1][cy].getStatus().equals(" "))) {
+            if (cx + 1 < this.rows 
+                && !visited[cx + 1][cy] ) {
                 visited[cx + 1][cy] = true;
-                stack.push(new int[] { cx + 1, cy });
-            }
-            if (cx - 1 >= 0 && !visited[cx - 1][cy] && field[cx - 1][cy].getStatus().equals(" ")) {
-                visited[cx - 1][cy] = true;
-                stack.push(new int[] { cx - 1, cy });
+                if((field[cx + 1][cy].getStatus().equals(" "))){
+                    stack.push(new int[] { cx + 1, cy });
+                }
+                else {
+                    field[cx + 1][cy].setRevealed(true);
+                }
 
             }
-            if (cy + 1 < this.columns && !visited[cx][cy + 1] && field[cx][cy + 1].getStatus().equals(" ")) {
-                visited[cx][cy + 1] = true;
-                stack.push(new int[] { cx, cy + 1 });
+            if (cx - 1 >= 0 && !visited[cx - 1][cy]) {
+                visited[cx - 1][cy] = true;
+                if(field[cx - 1][cy].getStatus().equals(" ")){
+                    stack.push(new int[] { cx - 1, cy });
+                }
+                else {
+                    field[cx - 1][cy].setRevealed(true);
+                }
             }
-            if (cy - 1 >= 0 && !visited[cx][cy - 1] && field[cx][cy - 1].getStatus().equals(" ")) {
+            if (cy + 1 < this.columns && !visited[cx][cy + 1]) {
+                visited[cx][cy + 1] = true;
+                if(field[cx][cy + 1].getStatus().equals(" ")){
+                    stack.push(new int[] { cx, cy + 1 });
+                }
+                else {
+                    field[cx][cy + 1].setRevealed(true);
+                }
+            }
+            if (cy - 1 >= 0 && !visited[cx][cy - 1]) {
                 visited[cx][cy - 1] = true;
-                stack.push(new int[] { cx, cy - 1 });
+                if(field[cx][cy - 1].getStatus().equals(" ")){
+                    stack.push(new int[] { cx, cy - 1 });
+                }
+                else {
+                    field[cx][cy - 1].setRevealed(true);
+                }
             }
         }
         this.debug();
@@ -301,7 +317,7 @@ public class Minefield {
             Cell cell = field[cx][cy];
 
             if (cell.getStatus().equals("M")) {
-                break; 
+                break;
             }
 
             if (!cell.getRevealed()) {
@@ -384,13 +400,21 @@ public class Minefield {
                 Cell cell = field[i][j];
                 if (cell.getStatus().equals("M") && cell.getRevealed()) {
                     sb.append(ANSI_RED).append("[M]").append(ANSI_GREY_BACKGROUND);
-                } else if (cell.getRevealed()) {
-                    // append status with color coding
-                    sb.append(ANSI_YELLOW);
-                    sb.append("[").append(cell.getStatus()).append("]");
-                    sb.append(ANSI_GREY_BACKGROUND);
                 } else {
-                    sb.append(ANSI_GREEN).append("[ ]").append(ANSI_GREY_BACKGROUND);
+                    String status = cell.getStatus();
+                    if (status.equals(" ")) {
+                        if (cell.getRevealed()) {
+                            sb.append(ANSI_BLUE).append("[").append(0).append("]").append(ANSI_GREY_BACKGROUND);
+                        } else {
+                            sb.append(ANSI_GREEN).append("[ ]").append(ANSI_GREY_BACKGROUND);
+                        }
+                    } else {
+                        if (cell.getRevealed()) {
+                            sb.append(ANSI_YELLOW).append("[").append(status).append("]").append(ANSI_GREY_BACKGROUND);
+                        } else {
+                            sb.append(ANSI_GREEN).append("[ ]").append(ANSI_GREY_BACKGROUND);
+                        }
+                    }
                 }
             }
             sb.append("\n");
