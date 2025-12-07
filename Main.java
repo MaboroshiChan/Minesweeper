@@ -25,9 +25,12 @@ public class Main{
         System.out.println("Please select a mode: (beginner, intermediate, expert, or debug)");
         int rows = 20;
         int columns = 20;
-        int mines = 20; // Random number of mines between 1 and 20
+        int mines = 40; // Random number of mines between 1 and 20
         boolean debug = false;
         Minefield minefield = new Minefield(rows, columns, mines);
+
+        // here we are going to place a test for revealzeros and revealstartingpoint
+        minefield.revealZeroes(rows / 2, columns / 2);
 
         /** 
         while(!minefield.gameOver()){
