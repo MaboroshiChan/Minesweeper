@@ -1,3 +1,4 @@
+
 //Import Section
 import java.util.Random;
 import java.util.Scanner;
@@ -14,9 +15,9 @@ import java.util.Scanner;
  * 4. Once while loop is complete figure out how to determine if the user won or lost. Print appropriate statement.
  */
 
-public class Main{
+public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         Random rand = new Random();
 
@@ -29,29 +30,72 @@ public class Main{
         boolean debug = false;
         Minefield minefield = new Minefield(rows, columns, mines);
 
-        // here we are going to place a test for revealzeros and revealstartingpoint
-        minefield.revealZeroes(rows / 2, columns / 2);
+        //minefield.revealZeroes(rows / 2, columns / 2);
 
-        /** 
-        while(!minefield.gameOver()){
-            int revealRow, revealCol;
-            // user input position to reveal
-            System.out.println("Enter row and column to reveal (e.g., '3 4'):");
-            revealRow = scanner.nextInt();
-            revealCol = scanner.nextInt();
-            scanner.nextLine(); // consume the newline character
-            if (revealRow < 0 || revealRow >= rows || revealCol < 0 || revealCol >= columns) {
-                System.out.println("Invalid position. Please try again.");
+        //minefield.revealStartingArea(rows / 2, columns / 2);
+
+        // 主游戏循环
+        while (!minefield.gameOver()) {
+
+            System.out.println("Enter your move:");
+            System.out.println("Format: 'row column' to reveal a cell");
+            System.out.println("Format: 'row column flag' to place/remove a flag");
+
+            String input = scanner.nextLine();
+            String[] parts = input.split(" ");
+
+            if (parts.length < 2) {
+                System.out.println("Invalid input. Please enter at least row and column.");
                 continue;
             }
-            // reveal the cell
-            minefield.revealZeroes(revealRow, revealCol);
-            // print the current state of the minefield
-            System.out.println(minefield.toString());
-            // check if the cell is a mine
 
+            try {
+                int row = Integer.parseInt(parts[0]);
+                int col = Integer.parseInt(parts[1]);
+                boolean isFlag = (parts.length >= 3 && parts[2].equalsIgnoreCase("flag"));
+
+                // 验证输入位置
+                if (row < 0 || row >= rows || col < 0 || col >= columns) {
+                    System.out.println("Invalid position. Please try again.");
+                    continue;
+                }
+
+                // 执行猜测
+                boolean hitMine = minefield.guess(row, col, isFlag);
+
+                // 检查是否踩到地雷
+                if (hitMine && !isFlag) {
+                    System.out.println("BOOM! You hit a mine!");
+                    if (debug) {
+                        minefield.debug();
+                    } else {
+                        System.out.println(minefield.toString());
+                    }
+                    break;
+                }
+
+                // 显示更新后的地雷场
+                System.out.println("Current minefield:");
+                if (debug) {
+                    minefield.debug();
+                } else {
+                    System.out.println(minefield.toString());
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format. Please enter numeric values for row and column.");
+            }
         }
-       System.out.println("test println");
-       */
+
+        /**
+         * if (minefield.isGameWon()) {
+         * System.out.println("Congratulations! You won the game!");
+         * System.out.println("Final minefield:");
+         * minefield.debug(); // 显示完整地雷场
+         * } else {
+         * System.out.println("Game Over! Better luck next time!");
+         * }
+         */
+        scanner.close();
     }
 }

@@ -228,7 +228,7 @@ public class Minefield {
      */
     public void revealZeroes(int x, int y) {
 
-        if(field[x][y].getStatus().equals(" ")) {
+        if (field[x][y].getStatus().equals(" ")) {
             return;
         }
         Stack1Gen<int[]> stack = new Stack1Gen<>();
@@ -247,9 +247,9 @@ public class Minefield {
 
             field[cx][cy].setRevealed(true);
             // traverse its surrounding
-            if (cx + 1 < this.rows 
-                && !visited[cx + 1][cy] 
-                && (field[cx + 1][cy].getStatus().equals(" "))) {
+            if (cx + 1 < this.rows
+                    && !visited[cx + 1][cy]
+                    && (field[cx + 1][cy].getStatus().equals(" "))) {
                 visited[cx + 1][cy] = true;
                 stack.push(new int[] { cx + 1, cy });
             }
@@ -291,39 +291,42 @@ public class Minefield {
         Q1Gen<int[]> queue = new Q1Gen<>();
         queue.add(new int[] { x, y });
 
-        Boolean[][] visited = new Boolean[this.columns][this.rows];
+        boolean[][] visited = new boolean[rows][columns];
+        visited[x][y] = true;
 
-        for (int i = 0; i < this.columns; i++) {
-            Arrays.fill(visited[i], Boolean.FALSE);
-        }
-        
-        while (!(queue.length() == 0)) {
+        while (queue.length() > 0) {
             int[] pos = queue.remove();
             int cx = pos[0];
             int cy = pos[1];
             Cell cell = field[cx][cy];
-            // traverse its surrounding
-            if (cx + 1 < this.rows && // unvisited
-                    !visited[cx + 1][cy] && !field[cx + 1][cy].getStatus().equals('M')) {
-                visited[cx + 1][cy] = true;
-                queue.add(new int[] { cx + 1, cy });
 
+            if (cell.getStatus().equals("M")) {
+                break; 
             }
-            if (cx - 1 >= 0 && !visited[cx - 1][cy] && !field[cx - 1][cy].getStatus().equals('M')) {
-                visited[cx - 1][cy] = true;
-                queue.add(new int[] { cx - 1, cy });
 
+            if (!cell.getRevealed()) {
+                cell.setRevealed(true);
+                revealedCells++;
             }
-            if (cy + 1 < this.columns && !visited[cx][cy + 1] && !field[cx][cy - 1].getStatus().equals('M')) {
-                visited[cx][cy + 1] = true;
-                queue.add(new int[] { cx, cy + 1 });
-            }
-            if (cy - 1 >= 0 && !visited[cx][cy - 1] && !field[cx][cy - 1].getStatus().equals('M')) {
-                visited[cx][cy - 1] = true;
-                queue.add(new int[] { cx, cy - 1 });
+
+            for (int dx = -1; dx <= 1; ++dx) {
+                for (int dy = -1; dy <= 1; ++dy) {
+                    int newX = cx + dx;
+                    int newY = cy + dy;
+
+                    if (newX >= 0 && newX < rows && newY >= 0 && newY < columns
+                            && !visited[newX][newY]) {
+
+                        visited[newX][newY] = true;
+                        queue.add(new int[] { newX, newY });
+                    }
+                }
             }
         }
-        this.debug();
+
+        if (debugMode) {
+            debug();
+        }
     }
 
     /**
@@ -352,16 +355,15 @@ public class Minefield {
                 } else {
                     String status = cell.getStatus();
                     if (status.equals(" ")) {
-                        if(cell.getRevealed()) {
+                        if (cell.getRevealed()) {
                             System.out.print(ANSI_BLUE + "[" + 0 + "]" + ANSI_GREY_BACKGROUND);
-                        }
-                        else {
+                        } else {
                             System.out.print(ANSI_GREEN + "[ ]" + ANSI_GREY_BACKGROUND);
                         }
                     } else {
                         System.out.print(ANSI_YELLOW + "[" + status + "]" + ANSI_GREY_BACKGROUND);
                     }
-                    
+
                 }
             }
             System.out.println();
